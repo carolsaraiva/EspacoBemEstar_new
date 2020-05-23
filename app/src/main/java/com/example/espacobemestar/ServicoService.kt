@@ -10,7 +10,7 @@ import com.google.gson.reflect.TypeToken
 
 object ServicoService {
 
-    val host = "https://localhost:44337"
+    val host = "https://emsystem.azurewebsites.net/api/"
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun getServico (context: Context): List<Servico> {
@@ -18,7 +18,7 @@ object ServicoService {
         if (AndroidUtils.isInternetDisponivel()) {
 
             val url = "$host/servicos"
-            val json = HttpHelper.get("https://emsystem.azurewebsites.net/api/servicos")
+            val json = HttpHelper.get(url)
             servico = parserJson(json)
             //return parserJson<List<Servico>>(json)
 

@@ -1,13 +1,15 @@
 package com.example.espacobemestar
 
+import android.R.attr.password
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import android.widget.*
-import androidx.core.text.set
-import androidx.fragment.app.DialogFragment
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import kotlinx.android.synthetic.main.login.*
+
 
 class MainActivity : DebugActivity() {
 
@@ -37,6 +39,7 @@ class MainActivity : DebugActivity() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun onClickLogin(){
         val loginUsuario = campo_usuario.text.toString()
         val loginSenha = campo_senha.text.toString()
@@ -58,18 +61,29 @@ class MainActivity : DebugActivity() {
         // fazer a chamada
         //startActivity(intent)
 
-        // Executa a telaInicial
-        if (loginUsuario=="aluno" && loginSenha=="impacta") {
-            startActivityForResult(intent, 1)
-        }
-        else{
-            val alerta = AlertDialog.Builder(this)
-            alerta.setTitle("Alerta")
-            alerta.setMessage("Usuário ou senha incorretos")
-            alerta.show()
-        }
-        campo_usuario.setText("")
-        campo_senha.setText("")
+        Thread {
+
+            var usuarioService =  UsuarioService
+            var resultado = usuarioService.Login(context,user = loginUsuario,password = loginSenha)
+
+            runOnUiThread {
+                // Código para atualizar a UI com a lista de disciplinas
+                // Executa a telaInicial
+                //if (loginUsuario=="aluno" && loginSenha=="impacta") {
+                if(resultado==true){
+                    startActivityForResult(intent, 1)
+                }
+                else{
+                    val alerta = AlertDialog.Builder(this)
+                    alerta.setTitle("Alerta")
+                    alerta.setMessage("Usuário ou senha incorretos")
+                    alerta.show()
+                }
+                campo_usuario.setText("")
+                campo_senha.setText("")
+            }
+        }.start()
+
 
     }
 
@@ -80,4 +94,15 @@ class MainActivity : DebugActivity() {
             Toast.makeText(context, "$result", Toast.LENGTH_LONG).show()
         }
     }
+
+
+
+
+
+
+
+
+
+
 }
+
