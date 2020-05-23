@@ -147,6 +147,9 @@ class TelaInicialActivity : DebugActivity() , NavigationView.OnNavigationItemSel
             R.id.nav_profissionais -> {
                 onClickProfissionais()
             }
+            R.id.nav_cadastro_agendamento -> {
+                onClickCadastroAgendamento()
+            }
             R.id.nav_agendamentos -> {
                 Toast.makeText(this, "Realize seu Agendamento", Toast.LENGTH_SHORT).show()
             }
@@ -189,6 +192,13 @@ class TelaInicialActivity : DebugActivity() , NavigationView.OnNavigationItemSel
     fun onClickServico() {
         val intent = Intent(context, ServicoActivity::class.java)
         intent.putExtra("tituloTela", "Serviço")
+        //StartActivity que abre a tela
+        startActivityForResult(intent, 1)
+    }
+
+    fun onClickCadastroAgendamento() {
+        val intent = Intent(context, CadastroAgendamentoActivity::class.java)
+        intent.putExtra("tituloTela", "Agendamento")
         //StartActivity que abre a tela
         startActivityForResult(intent, 1)
     }

@@ -39,7 +39,6 @@ class MainActivity : DebugActivity() {
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun onClickLogin(){
         val loginUsuario = campo_usuario.text.toString()
         val loginSenha = campo_senha.text.toString()

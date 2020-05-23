@@ -1,70 +1,93 @@
 package com.example.espacobemestar
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.navigation.NavigationView
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_profissionais.*
 import kotlinx.android.synthetic.main.activity_servico.*
+import kotlinx.android.synthetic.main.activity_servico.layoutMenuLateral
 import kotlinx.android.synthetic.main.activity_servico.menu_lateral
+import kotlinx.android.synthetic.main.activity_servico.progressBar2
 import kotlinx.android.synthetic.main.activity_tela_inicial.*
-import kotlinx.android.synthetic.main.activity_tela_inicial.layoutMenuLateral
-import kotlinx.android.synthetic.main.adapter_profissionais.*
 import kotlinx.android.synthetic.main.toolbar.*
 import java.util.*
 import kotlin.concurrent.schedule
 
-class ProfissionaisActivity: DebugActivity (), NavigationView.OnNavigationItemSelectedListener {
+class CadastroAgendamentoActivity : DebugActivity (), NavigationView.OnNavigationItemSelectedListener {
     private val context: Context get() = this
 
-    private var profissionais = listOf<Profissionais>()
+    private var servicos = listOf<Servico>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profissionais)
+        setContentView(R.layout.activity_cadastro_agendamento)
 
-        val args = intent.extras
-        val titulo = args?.getString("tituloTela")
-
+        //val args = intent.extras
+        // val titulo = args?.getString("tituloTela")
 
         // colocar toolbar
         setSupportActionBar(toolbar)
-        supportActionBar?.title = titulo
+        supportActionBar?.title = "Cadastro de Agendamento"
         // up navigation
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         configuraMenuLateral()
 
         //Configuração do recyclerview
-        recyclerProfissionais?.layoutManager = LinearLayoutManager(context)
-        recyclerProfissionais?.itemAnimator = DefaultItemAnimator()
-        recyclerProfissionais?.setHasFixedSize(true)
+        recyclerServico?.layoutManager = LinearLayoutManager(context)
+        recyclerServico?.itemAnimator = DefaultItemAnimator()
+        recyclerServico?.setHasFixedSize(true)
 
         //ATUALIZAR PROGRESSBAR2 INVISIVEL
-        progressBar3.visibility = View.INVISIBLE
+       // progressBar2.visibility = View.INVISIBLE
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onResume() {
         super.onResume()
-        taskProfissionais()
+        taskServico()
     }
 
-    fun taskProfissionais(){
-        profissionais = ProfissionaisService.getProfissionais(context)
-        recyclerProfissionais?.adapter = ProfissionaisAdapter(profissionais){ onClickProfissionaisDetalhe(it) }
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    fun taskServico() {
+
+        Thread {
+
+            // this.servicos = ServicoService.getServico(context)
+            runOnUiThread {
+                // Código para atualizar a UI com a lista de disciplinas
+                //  recyclerServico?.adapter = ServicoAdapter(this.servicos){ onClickServicoDetalhe(it) }
+                //  enviaNotificacao(servicos.get(1))
+            }
+        }.start()
+
+
+    }
+
+
+    fun enviaNotificacao(servico: Servico) {
+        val intent = Intent(this, ServicoActivity::class.java)
+        intent.putExtra("servico", servico)
+        NotificationUtil.create(
+            this,
+            1,
+            intent,
+            "Título - EMSApp",
+            "Há um novo Serviço ${servico.nome}"
+        )
     }
 
     // método sobrescrito para inflar o menu na Actionbar
@@ -72,7 +95,8 @@ class ProfissionaisActivity: DebugActivity (), NavigationView.OnNavigationItemSe
         // infla o menu com os botões da ActionBar
         menuInflater.inflate(R.menu.menu_main, menu)
         // vincular evento de buscar
-        (menu?.findItem(R.id.action_buscar)?.actionView as SearchView).setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        (menu?.findItem(R.id.action_buscar)?.actionView as SearchView).setOnQueryTextListener(object :
+            SearchView.OnQueryTextListener {
 
             override fun onQueryTextChange(newText: String): Boolean {
                 Toast.makeText(context, newText, Toast.LENGTH_SHORT).show()
@@ -94,17 +118,16 @@ class ProfissionaisActivity: DebugActivity (), NavigationView.OnNavigationItemSe
         val id = item?.itemId
         // verificar qual item foi clicado e mostrar a mensagem Toast na tela
         // a comparação é feita com o recurso de id definido no xml
-        if  (id == R.id.action_buscar) {
+        if (id == R.id.action_buscar) {
 
-        }
-        else if (id == R.id.action_atualizar) {
-            progressBar3.visibility = View.VISIBLE
+        } else if (id == R.id.action_atualizar) {
+            progressBar2.visibility = View.VISIBLE
             Timer("SettingUp", false).schedule(10000) {
-                progressBar3.visibility= View.INVISIBLE
+                progressBar2.visibility = View.INVISIBLE
             }
-       // } else if (id == R.id.action_config) {
-       //     Toast.makeText(context, "Botão de configuracoes", Toast.LENGTH_LONG).show()
-        } else if(id == R.id.action_sair) {
+            //} else if (id == R.id.action_config) {
+            //    Toast.makeText(context, "Botão de configuracoes", Toast.LENGTH_LONG).show()
+        } else if (id == R.id.action_sair) {
             sairApp()
         }
         // botão up navigation
@@ -114,17 +137,18 @@ class ProfissionaisActivity: DebugActivity (), NavigationView.OnNavigationItemSe
         return super.onOptionsItemSelected(item)
     }
 
-    private fun configuraMenuLateral () {
+    private fun configuraMenuLateral() {
         var toogle = ActionBarDrawerToggle(
             this,
             layoutMenuLateral,
             toolbar,
             R.string.nav_open,
-            R.string.nav_close)
+            R.string.nav_close
+        )
         layoutMenuLateral.addDrawerListener(toogle)
         toogle.syncState()
 
-        menu_lateral.setNavigationItemSelectedListener (this)
+        menu_lateral.setNavigationItemSelectedListener(this)
     }
 
     //menu lateral
@@ -136,16 +160,17 @@ class ProfissionaisActivity: DebugActivity (), NavigationView.OnNavigationItemSe
             R.id.nav_profissionais -> {
                 onClickProfissionais()
             }
-            R.id.nav_cadastro_agendamento -> {
-                onClickCadastroAgendamento()
-            }
             R.id.nav_agendamentos -> {
                 Toast.makeText(this, "Realize seu Agendamento", Toast.LENGTH_SHORT).show()
             }
+
+            R.id.nav_cadastro_agendamento -> {
+                onClickCadastroAgendamento()
+            }
+
             R.id.nav_ajuda -> {
                 Toast.makeText(this, "Estamos aqui para ajuda-lo", Toast.LENGTH_SHORT).show()
             }
-
             // R.id.nav_localizacao -> {
             //     Toast.makeText(this,"Clicou em localização", Toast.LENGTH_SHORT).show()
             // }
@@ -162,7 +187,25 @@ class ProfissionaisActivity: DebugActivity (), NavigationView.OnNavigationItemSe
     }
 
     //variavel para sair confirmar saída da tela
-
+    private fun sairApp() {
+        val alerta = AlertDialog.Builder(this)
+        alerta.setTitle("Sair")
+        alerta.setMessage("Deseja realmente sair?")
+        alerta.setPositiveButton(
+            "Sim", DialogInterface.OnClickListener(
+                function = { dialog: DialogInterface, which: Int ->
+                    val intent = Intent(context, MainActivity::class.java)
+                    intent.putExtra("result", "Saída do App")
+                    startActivityForResult(intent, 1)
+                    finish()
+                })
+        )
+        alerta.setNegativeButton(
+            "Não", DialogInterface.OnClickListener(
+                function = { dialog: DialogInterface, which: Int -> })
+        )
+        alerta.show()
+    }
 
     fun onClickServicoDetalhe(objetoservico: Servico) {
         val intent = Intent(context, ServicoDetalheActivity::class.java)
@@ -184,36 +227,12 @@ class ProfissionaisActivity: DebugActivity (), NavigationView.OnNavigationItemSe
         //StartActivity que abre a tela
         startActivityForResult(intent, 1)
     }
-    fun onClickProfissionaisDetalhe(objetoservico: Profissionais) {
-        val intent = Intent(context, ProfissionaisDetalheActivity::class.java)
-        intent.putExtra("profissionais_detalhe", objetoservico)
-        //StartActivity que abre a tela
-        startActivityForResult(intent, 1)
-    }
-
     fun onClickCadastroAgendamento() {
         val intent = Intent(context, CadastroAgendamentoActivity::class.java)
-      //  intent.putExtra("tituloTela", "Agendamento")
+        //intent.putExtra("tituloTela", "Agendamento")
         //StartActivity que abre a tela
         startActivityForResult(intent, 1)
     }
-
-    //função para sair app
-    private fun sairApp() {
-        val alerta = AlertDialog.Builder(this)
-        alerta.setTitle("Sair")
-        alerta.setMessage("Deseja realmente sair?")
-        alerta.setPositiveButton("Sim", DialogInterface.OnClickListener(
-            function = { dialog: DialogInterface, which: Int ->
-                val returnIntent = Intent()
-                returnIntent.putExtra("result","Saída do App")
-                setResult(Activity.RESULT_OK,returnIntent)
-                finish()
-            }))
-        alerta.setNegativeButton("Não", DialogInterface.OnClickListener(
-            function = { dialog: DialogInterface, which: Int -> }))
-        alerta.show()
-    }
-
-
 }
+
+

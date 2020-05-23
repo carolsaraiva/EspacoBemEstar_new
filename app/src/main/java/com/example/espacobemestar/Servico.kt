@@ -12,6 +12,7 @@ class Servico : Serializable {
     @PrimaryKey(autoGenerate = true)
     var id: Long =0
 
+
     @ColumnInfo(name = "nome")
     var nome: String = ""
 

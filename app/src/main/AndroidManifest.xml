@@ -35,6 +35,11 @@
             android:parentActivityName=".TelaInicialActivity">
         </activity>
 
+        <activity android:name=".CadastroAgendamentoActivity"
+            android:theme="@style/AppTheme.Toolbar"
+            android:parentActivityName=".TelaInicialActivity">
+        </activity>
+
         <activity android:name=".ServicoDetalheActivity"
             android:theme="@style/AppTheme.Toolbar"
             android:parentActivityName=".TelaInicialActivity">
