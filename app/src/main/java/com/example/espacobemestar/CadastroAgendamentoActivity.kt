@@ -6,10 +6,12 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.widget.*
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -22,15 +24,18 @@ import kotlinx.android.synthetic.main.activity_cadastro_agendamento.*
 import kotlinx.android.synthetic.main.activity_servico.*
 import kotlinx.android.synthetic.main.activity_servico.layoutMenuLateral
 import kotlinx.android.synthetic.main.activity_servico.menu_lateral
-import kotlinx.android.synthetic.main.activity_servico.progressBar2
-import kotlinx.android.synthetic.main.activity_tela_inicial.*
 import kotlinx.android.synthetic.main.toolbar.*
 import java.util.*
 import kotlin.concurrent.schedule
 
 class CadastroAgendamentoActivity : DebugActivity (), NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener {
     private val context: Context get() = this
-    var spinner:Spinner? = null
+    var spinnerServico:Spinner? = null
+    var spinnerHorario:Spinner? = null
+    private var servicoSelecionado:String = ""
+    private var dataHorarioSelecionado:String = ""
+
+
     private var servicos = listOf<Servico>()
 
     override fun onItemSelected(arg0: AdapterView<*>, arg1: View, position: Int, id: Long) {
@@ -46,11 +51,13 @@ class CadastroAgendamentoActivity : DebugActivity (), NavigationView.OnNavigatio
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cadastro_agendamento)
 
+        agendar.setOnClickListener {onClickAgendar() }
         //val args = intent.extras
         // val titulo = args?.getString("tituloTela")
 
 
         Thread {
+            var horarios = AgendamentoService.getAgendamento(context,"Massagem")
 
             this.servicos = ServicoService.getServico(context)
             runOnUiThread {
@@ -60,18 +67,41 @@ class CadastroAgendamentoActivity : DebugActivity (), NavigationView.OnNavigatio
                     list.add(i.nome)
                 }
 
-                spinner = this.selecionar_servico
-                spinner!!.setOnItemSelectedListener(this)
-
-                // Create an ArrayAdapter using a simple spinner layout and languages array
+                spinnerServico = this.selecionar_servico
+                spinnerServico?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                    }
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        val selecionado = parent?.getItemAtPosition(position) as String
+                        Toast.makeText(context, "Opção escolhida: $selecionado", Toast.LENGTH_SHORT).show()
+                        servicoSelecionado = selecionado
+                    }
+                }
                 val aa = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, list)
-                // Set layout to use when the list of choices appear
                 aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                // Set Adapter to Spinner
-                spinner!!.setAdapter(aa)
+                spinnerServico!!.setAdapter(aa)
+
+                // Horarios
 
 
+                val listHorarios: MutableList<String> = ArrayList()
+                for (i in horarios ) {
+                    listHorarios.add(i.data)
+                }
 
+                spinnerHorario = this.Selecionar_data_horario
+                spinnerHorario?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                    }
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        val selecionado = parent?.getItemAtPosition(position) as String
+                        dataHorarioSelecionado = selecionado
+                        Toast.makeText(context, "Opção escolhida: $selecionado", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                val aahorario = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, listHorarios)
+                aahorario.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinnerHorario!!.setAdapter(aahorario)
             }
         }.start()
 
@@ -93,6 +123,28 @@ class CadastroAgendamentoActivity : DebugActivity (), NavigationView.OnNavigatio
 
         //ATUALIZAR PROGRESSBAR2 INVISIVEL
        // progressBar2.visibility = View.INVISIBLE
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    private fun onClickAgendar() {
+        Thread {
+            spinnerServico = this.selecionar_servico
+            spinnerHorario = this.Selecionar_data_horario
+
+            var usuarioService =  UsuarioService
+            var aggnew = Agendamento()
+            aggnew.servico = servicoSelecionado
+            aggnew.data = dataHorarioSelecionado
+            aggnew.username = "aluno"
+
+            AgendamentoService.save(agendamento = aggnew)
+
+            runOnUiThread {
+                Toast.makeText(context, "Agendamento Realizado", Toast.LENGTH_LONG).show()
+
+            }
+        }.start()
+
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)

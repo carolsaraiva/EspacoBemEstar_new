@@ -56,7 +56,7 @@
                 />
 
             <Spinner
-                android:id="@+id/DataHora"
+                android:id="@+id/Selecionar_data_horario"
                 android:layout_width="348dp"
                 android:layout_height="24dp"
                 android:layout_marginTop="40dp"
