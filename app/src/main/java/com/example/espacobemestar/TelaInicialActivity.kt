@@ -148,21 +148,29 @@ class TelaInicialActivity : DebugActivity() , NavigationView.OnNavigationItemSel
                 onClickProfissionais()
             }
             R.id.nav_cadastro_agendamento -> {
+                Toast.makeText(this, "Realize seu Agendamento", Toast.LENGTH_SHORT).show()
                 onClickCadastroAgendamento()
+
             }
             R.id.nav_agendamentos -> {
-                Toast.makeText(this, "Realize seu Agendamento", Toast.LENGTH_SHORT).show()
+                onClickAgendamento()
             }
-            R.id.nav_ajuda -> {
-                Toast.makeText(this, "Estamos aqui para ajuda-lo", Toast.LENGTH_SHORT).show()
+
+
+            //R.id.nav_ajuda -> {
+            //    Toast.makeText(this, "Estamos aqui para ajuda-lo", Toast.LENGTH_SHORT).show()
+           // }
+            R.id.nav_localizacao -> {
+               startActivity(Intent(this, MapaActivity::class.java))
+                onClickMapa()
             }
-            // R.id.nav_localizacao -> {
-            //     Toast.makeText(this,"Clicou em localização", Toast.LENGTH_SHORT).show()
+
+
             // }
             // R.id.nav_config -> {
             //     Toast.makeText(this,"Clicou em configurações", Toast.LENGTH_SHORT).show()
             // }
-            R.id.nav_sair -> {
+            R.id.nav_sair-> {
                 sairApp()
             }
 
@@ -217,6 +225,13 @@ class TelaInicialActivity : DebugActivity() , NavigationView.OnNavigationItemSel
     fun onClickProfissionais() {
         val intent = Intent(context, ProfissionaisActivity::class.java)
         intent.putExtra("tituloTela", "Profissionais")
+        //StartActivity que abre a tela
+        startActivityForResult(intent, 1)
+    }
+
+    fun onClickMapa() {
+        val intent = Intent(context, MapaActivity::class.java)
+        intent.putExtra("tituloTela", "Localização")
         //StartActivity que abre a tela
         startActivityForResult(intent, 1)
     }

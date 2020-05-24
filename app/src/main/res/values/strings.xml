@@ -9,4 +9,9 @@
     <string name="action_sair">Sair</string>
     <string name="nav_open">Abrir</string>
     <string name="nav_close">Fechar</string>
+
+    <string name="APIKEY">AIzaSyD_5saStzGWtNjGT8QsW8vJH1vgbpSV0RM</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

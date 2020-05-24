@@ -252,24 +252,30 @@ class CadastroAgendamentoActivity : DebugActivity (), NavigationView.OnNavigatio
             R.id.nav_profissionais -> {
                 onClickProfissionais()
             }
-            R.id.nav_agendamentos -> {
-                Toast.makeText(this, "Realize seu Agendamento", Toast.LENGTH_SHORT).show()
-            }
-
             R.id.nav_cadastro_agendamento -> {
+                Toast.makeText(this, "Realize seu Agendamento", Toast.LENGTH_SHORT).show()
                 onClickCadastroAgendamento()
+
+            }
+            R.id.nav_agendamentos -> {
+                onClickAgendamento()
             }
 
-            R.id.nav_ajuda -> {
-                Toast.makeText(this, "Estamos aqui para ajuda-lo", Toast.LENGTH_SHORT).show()
+
+            //R.id.nav_ajuda -> {
+            //    Toast.makeText(this, "Estamos aqui para ajuda-lo", Toast.LENGTH_SHORT).show()
+            // }
+            R.id.nav_localizacao -> {
+                startActivity(Intent(this, MapaActivity::class.java))
+                onClickMapa()
             }
-            // R.id.nav_localizacao -> {
-            //     Toast.makeText(this,"Clicou em localização", Toast.LENGTH_SHORT).show()
+
+
             // }
             // R.id.nav_config -> {
             //     Toast.makeText(this,"Clicou em configurações", Toast.LENGTH_SHORT).show()
             // }
-            R.id.nav_sair -> {
+            R.id.nav_sair-> {
                 sairApp()
             }
 
@@ -299,18 +305,29 @@ class CadastroAgendamentoActivity : DebugActivity (), NavigationView.OnNavigatio
         alerta.show()
     }
 
-    fun onClickServicoDetalhe(objetoservico: Servico) {
-        val intent = Intent(context, ServicoDetalheActivity::class.java)
-        intent.putExtra("servico_detalhe", objetoservico)
-        //StartActivity que abre a tela
-        startActivityForResult(intent, 1)
-    }
-
     fun onClickServico() {
         val intent = Intent(context, ServicoActivity::class.java)
         intent.putExtra("tituloTela", "Serviço")
         //StartActivity que abre a tela
         startActivityForResult(intent, 1)
+    }
+
+    fun onClickCadastroAgendamento() {
+        val intent = Intent(context, CadastroAgendamentoActivity::class.java)
+        intent.putExtra("tituloTela", "Agendamento")
+        //StartActivity que abre a tela
+        startActivityForResult(intent, 1)
+    }
+
+    fun onClickProfissionais(nomeTela: String) {
+        val intent = Intent(context, ProfissionaisActivity::class.java)
+        intent.putExtra("tituloTela", nomeTela)
+        startActivityForResult(intent, 1)
+    }
+
+    fun onClickAgendamento() {
+        val intent = Intent(context, AgendamentoActivity::class.java)
+        intent.putExtra("nome", "")
     }
 
     fun onClickProfissionais() {
@@ -319,9 +336,10 @@ class CadastroAgendamentoActivity : DebugActivity (), NavigationView.OnNavigatio
         //StartActivity que abre a tela
         startActivityForResult(intent, 1)
     }
-    fun onClickCadastroAgendamento() {
-        val intent = Intent(context, CadastroAgendamentoActivity::class.java)
-        //intent.putExtra("tituloTela", "Agendamento")
+
+    fun onClickMapa() {
+        val intent = Intent(context, MapaActivity::class.java)
+        intent.putExtra("tituloTela", "Localização")
         //StartActivity que abre a tela
         startActivityForResult(intent, 1)
     }
