@@ -26,7 +26,7 @@ class Servico : Serializable {
     var foto: String = ""
 
     override fun toString(): String {
-        return "Servico(nome=' $nome')"
+        return nome
     }
 
     fun toJson(): String {

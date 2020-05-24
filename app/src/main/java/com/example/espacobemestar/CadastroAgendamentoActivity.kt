@@ -6,9 +6,10 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.widget.*
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -17,6 +18,7 @@ import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.navigation.NavigationView
+import kotlinx.android.synthetic.main.activity_cadastro_agendamento.*
 import kotlinx.android.synthetic.main.activity_servico.*
 import kotlinx.android.synthetic.main.activity_servico.layoutMenuLateral
 import kotlinx.android.synthetic.main.activity_servico.menu_lateral
@@ -26,17 +28,55 @@ import kotlinx.android.synthetic.main.toolbar.*
 import java.util.*
 import kotlin.concurrent.schedule
 
-class CadastroAgendamentoActivity : DebugActivity (), NavigationView.OnNavigationItemSelectedListener {
+class CadastroAgendamentoActivity : DebugActivity (), NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener {
     private val context: Context get() = this
-
+    var spinner:Spinner? = null
     private var servicos = listOf<Servico>()
 
+    override fun onItemSelected(arg0: AdapterView<*>, arg1: View, position: Int, id: Long) {
+        // use position to know the selected item
+    }
+
+    override fun onNothingSelected(arg0: AdapterView<*>) {
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cadastro_agendamento)
 
         //val args = intent.extras
         // val titulo = args?.getString("tituloTela")
+
+
+        Thread {
+
+            this.servicos = ServicoService.getServico(context)
+            runOnUiThread {
+
+                val list: MutableList<String> = ArrayList()
+                for (i in this.servicos ) {
+                    list.add(i.nome)
+                }
+
+                spinner = this.selecionar_servico
+                spinner!!.setOnItemSelectedListener(this)
+
+                // Create an ArrayAdapter using a simple spinner layout and languages array
+                val aa = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, list)
+                // Set layout to use when the list of choices appear
+                aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                // Set Adapter to Spinner
+                spinner!!.setAdapter(aa)
+
+
+
+            }
+        }.start()
+
+
+
 
         // colocar toolbar
         setSupportActionBar(toolbar)
