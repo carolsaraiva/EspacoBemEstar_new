@@ -9,7 +9,7 @@ import java.io.Serializable
 import java.util.*
 
 @Entity(tableName = "agendamento")
-public class Agendamento : Serializable {
+class Agendamento : Serializable {
 
     @PrimaryKey(autoGenerate = true)
     var id: Long =0

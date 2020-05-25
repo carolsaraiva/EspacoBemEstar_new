@@ -154,19 +154,30 @@ class ServicoActivity: DebugActivity (), NavigationView.OnNavigationItemSelected
             R.id.nav_profissionais -> {
                 onClickProfissionais()
             }
-            R.id.nav_agendamentos -> {
+            R.id.nav_cadastro_agendamento -> {
                 Toast.makeText(this, "Realize seu Agendamento", Toast.LENGTH_SHORT).show()
+                onClickCadastroAgendamento()
+
             }
-           // R.id.nav_ajuda -> {
-             //   Toast.makeText(this, "Estamos aqui para ajuda-lo", Toast.LENGTH_SHORT).show()
-            //}
-           // R.id.nav_localizacao -> {
-           //     Toast.makeText(this,"Clicou em localização", Toast.LENGTH_SHORT).show()
-           // }
-           // R.id.nav_config -> {
-           //     Toast.makeText(this,"Clicou em configurações", Toast.LENGTH_SHORT).show()
-           // }
-            R.id.nav_sair -> {
+            R.id.nav_agendamentos -> {
+                onClickAgendamento()
+            }
+
+
+            //R.id.nav_ajuda -> {
+            //    Toast.makeText(this, "Estamos aqui para ajuda-lo", Toast.LENGTH_SHORT).show()
+            // }
+            R.id.nav_localizacao -> {
+                startActivity(Intent(this, MapaActivity::class.java))
+                onClickMapa()
+            }
+
+
+            // }
+            // R.id.nav_config -> {
+            //     Toast.makeText(this,"Clicou em configurações", Toast.LENGTH_SHORT).show()
+            // }
+            R.id.nav_sair-> {
                 sairApp()
             }
 
@@ -222,6 +233,7 @@ class ServicoActivity: DebugActivity (), NavigationView.OnNavigationItemSelected
     fun onClickAgendamento() {
         val intent = Intent(context, AgendamentoActivity::class.java)
         intent.putExtra("nome", "")
+        startActivityForResult(intent, 1)
     }
 
     fun onClickProfissionais() {
@@ -237,6 +249,10 @@ class ServicoActivity: DebugActivity (), NavigationView.OnNavigationItemSelected
         //StartActivity que abre a tela
         startActivityForResult(intent, 1)
     }
+
+
+
+
 
 
 }

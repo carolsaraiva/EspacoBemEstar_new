@@ -23,12 +23,12 @@ object AgendamentoService {
 
     // listar todos
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    fun getAgendamento (): Agendamento? {
+    fun getAgendamento ():  List<Agendamento> {
 
         val url = "$host/agendamentos/"
         val json = HttpHelper.get(url)
-        val agendamento = parserJson<Agendamento>(json)
-        return agendamento
+        val listAgendamento = parserJson<List<Agendamento>>(json)
+        return listAgendamento
     }
 
 
